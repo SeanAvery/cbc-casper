@@ -13,3 +13,6 @@ out/
 .tox/
 
 .DS_Store
+
+visualizer/node_modules
+visualizer/package-lock.json
