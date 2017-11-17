@@ -16,3 +16,5 @@ out/
 
 visualizer/node_modules
 visualizer/package-lock.json
+package-lock.json
+node_modules
