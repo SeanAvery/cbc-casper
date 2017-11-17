@@ -6,7 +6,7 @@ import matplotlib as mpl
 import imageio as io
 from PIL import Image
 import networkx as nx
-
+import json
 mpl.use('TkAgg')
 import matplotlib.pyplot as plt  # noqa
 import pylab  # noqa
@@ -103,11 +103,28 @@ class PlotTool(object):
             node_sizes.append(350 * pow(message.sender.weight / pi, 0.5))
             labels[message] = message_labels.get(message, '')
 
+        # getting node data for d3-viz
+        graph_object = {}
+        graph_object['nodes'] = []
+        graph_object['edges'] = []
+        for node in nodes:
+            node_object = {}
+            node_object['id'] = id(node)
+            node_object['label'] = id(node)
+            node_object['shape'] = 'hexagon'
+            graph_object['nodes'].append(node_object)
+
         nx.draw_networkx_nodes(graph, positions, alpha=0.5, node_color=color_values, nodelist=nodes,
                                node_size=node_sizes, node_shape=self.node_shape, edge_color='black')
 
         for edge in edges:
             if isinstance(edge, dict):
+                # getting edge data for d3-viz
+                for e in edge['edges']:
+                    edge_object = {}
+                    edge_object['from'] = id(e[0])
+                    edge_object['to'] = id(e[1])
+                    graph_object['edges'].append(edge_object)
                 nx.draw_networkx_edges(
                     graph,
                     positions,
@@ -119,6 +136,9 @@ class PlotTool(object):
                 )
             else:
                 assert False, edge
+
+        print(json.dumps(graph_object))
+
         nx.draw_networkx_labels(graph, positions, labels=labels)
 
         ax = plt.gca()
