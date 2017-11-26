@@ -7,34 +7,40 @@ class SideNav extends Component {
   constructor() {
     super()
     this.state = {}
+    this.form = {}
     this.handleFormChange = this.handleFormChange.bind(this)
   }
 
   handleFormChange(e, topic) {
     switch(topic) {
       case 'validators':
-        this.setState({ validators: e.target.value })
+        this.form.validators = e.target.value
         break
       case 'rounds':
-        this.setState({ rounds: e.target.value })
+        this.form.rounds = e.target.value
         break
       case 'interval':
-        this.setState({ inverval: e.target.value })
+        this.form.interval = e.target.value
         break
-      case 'random':
-        this.setState({ network: 'rand' })
+      case 'rand':
+        this.form.network = topic
+        this.props.dispatch({type: 'CHANGE_SETTINGS', payload: topic })
         break
-      case 'round-robin':
-        this.setState({ network: 'rrob' })
+      case 'rrob':
+        this.form.network = topic
+        this.props.dispatch({type: 'CHANGE_SETTINGS', payload: topic })
         break
       case 'full':
-        this.setState({ network: 'full' })
+        this.form.network = topic
+        this.props.dispatch({type: 'CHANGE_SETTINGS', payload: topic })
         break
-      case 'no-final':
-        this.setState({ network: 'nofinal' })
+      case 'nofinal':
+        this.form.network = topic
+        this.props.dispatch({type: 'CHANGE_SETTINGS', payload: topic })
         break;
       case 'binary':
-        this.setState({ network: 'binary' })
+        this.form.network = topic
+        this.props.dispatch({type: 'CHANGE_SETTINGS', payload: topic })
         break
       default:
         break
@@ -43,17 +49,17 @@ class SideNav extends Component {
 
   startSimulation() {
     const { dispatch } = this.props
-    dispatch(Middleware.sendMsg(this.state))
+    dispatch(Middleware.sendMsg(this.form))
   }
 
   render() {
     return (
       <div style={sideNavStyle}>
         <MenuList role="menu">
-          <MenuItem onClick={(e) => this.handleFormChange(e, 'random')}>Random</MenuItem>
-          <MenuItem onClick={(e) => this.handleFormChange(e, 'round-robin')}>Round-robin</MenuItem>
+          <MenuItem onClick={(e) => this.handleFormChange(e, 'rand')}>Random</MenuItem>
+          <MenuItem onClick={(e) => this.handleFormChange(e, 'rrob')}>Round-robin</MenuItem>
           <MenuItem onClick={(e) => this.handleFormChange(e, 'full')}>Full</MenuItem>
-          <MenuItem onClick={(e) => this.handleFormChange(e, 'no-final')}>No-final</MenuItem>
+          <MenuItem onClick={(e) => this.handleFormChange(e, 'nofinal')}>No-final</MenuItem>
           <MenuItem onClick={(e) => this.handleFormChange(e, 'binary')}>Binary</MenuItem>
         </MenuList>
         <TextField
