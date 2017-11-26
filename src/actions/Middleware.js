@@ -16,6 +16,7 @@ export default class Middleware {
 
   sendMsg(msg) {
     return (dispatch) => {
+      dispatch({type: 'CLEAR'})
       this.ws.send(JSON.stringify(msg))
     }
   }

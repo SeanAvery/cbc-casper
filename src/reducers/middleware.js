@@ -25,6 +25,14 @@ export default function middeware(state=init_state, action) {
           edges: state.graph_data.nodes.concat(...action.payload.edges)
         }
       }
+    case 'CLEAR':
+      return {
+        ...state,
+        graph_data : {
+          nodes: [],
+          edges: []
+        }
+      }
     default:
       return state
   }
