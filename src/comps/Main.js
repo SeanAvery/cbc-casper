@@ -10,7 +10,6 @@ export default class Main extends Component {
   }
 
   render() {
-    console.log('here main')
     return (
       <Provider store={store}>
         <div style={mainStyle}>

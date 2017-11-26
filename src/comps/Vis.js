@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Middleware } from '../actions/index'
 import Graph from 'react-graph-vis'
+import * as Layouts from './Layouts'
 
 class Vis extends Component {
   constructor() {
@@ -13,16 +14,16 @@ class Vis extends Component {
   }
 
   render() {
-    const { graph_data } = this.props
-     if (graph_data.nodes.length > 0) {
+    const { graph_data, graph_settings } = this.props
+    if (graph_data.nodes.length > 0) {
       return (
-        <Graph graph={graph_data} />
+        <Graph graph={graph_data} options={graph_settings} />
       )
     } else {
       return (
-        <h1 style={{ padding: 20 }}>
+        <h2 style={{ padding: 20 }}>
           RUN A SIMULATION!
-        </h1>
+        </h2>
       )
     }
   }
@@ -31,3 +32,5 @@ class Vis extends Component {
 const storeToProps = (store) => store.middleware
 
 export default connect(storeToProps)(Vis)
+
+//options={Layouts[`${graph_settings}_layout`]}

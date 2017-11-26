@@ -3,36 +3,19 @@ const init_state = {
   graph_data: {
     nodes: [],
     edges: []
-  }
+  },
+  graph_setting: 'full',
+  command : {}
 }
 
 export default function middeware(state=init_state, action) {
   switch(action.type) {
-    case 'INIT_VALIDATORS':
-      let new_nodes = []
-      action.payload.map(node => {
-        console.log('node', node)
-        new_nodes.push({
-          id: node,
-          label: `V${node}`,
-          shape: 'hexagon'
-        })
-      })
+    case 'CHANGE_SETTINGS':
       return {
         ...state,
-        validators: action.payload,
-        graph_data: {
-          ...state.graph_data,
-          nodes: state.graph_data.nodes.concat(...new_nodes)
-        }
+        grap_settings: action.payload
       }
-    case 'TEST_PUT':
-      return {
-        ...state,
-        graph_data: {
-          ...state.graph_data,
-          nodes: [{id: 1}],        }
-      }
+      break
     case 'APPEND_GRAPH':
       return {
         ...state,
