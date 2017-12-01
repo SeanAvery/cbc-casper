@@ -1,17 +1,17 @@
 const rand_layout = {
   layout: {
     randomSeed: undefined,
-    improvedLayout:true,
+    // improvedLayout:true,
     hierarchical: {
       enabled: true,
       levelSeparation: 100,
       nodeSpacing: 100,
       treeSpacing: 100,
-      blockShifting: false,
-      edgeMinimization: false,
-      parentCentralization: false,
+      blockShifting: true,
+      edgeMinimization: true,
+      parentCentralization: true,
       direction: 'LR',        // UD, DU, LR, RL
-      sortMethod: 'hubsize'   // hubsize, directed
+      sortMethod: 'directed'   // hubsize, directed
     }
   }
 }

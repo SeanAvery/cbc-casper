@@ -4,16 +4,17 @@ const init_state = {
     nodes: [],
     edges: []
   },
-  graph_setting: 'full',
+  graph_settings: 'full',
   command : {}
 }
 
 export default function middeware(state=init_state, action) {
   switch(action.type) {
     case 'CHANGE_SETTINGS':
+      console.log('setting type', action.payload)
       return {
         ...state,
-        grap_settings: action.payload
+        graph_settings: action.payload
       }
       break
     case 'APPEND_GRAPH':
