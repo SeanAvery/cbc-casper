@@ -10,7 +10,7 @@ import json
 mpl.use('TkAgg')
 import matplotlib.pyplot as plt  # noqa
 import pylab  # noqa
-
+import time
 
 BASE = 10000000
 IMAGE_LIMIT = 500
@@ -25,7 +25,7 @@ class PlotTool(object):
         self.display = display
         self.save = save
         self.node_shape = node_shape
-
+        self.interval_sleep = 5
         if save:
             self._create_graph_folder()
 
@@ -107,12 +107,24 @@ class PlotTool(object):
         graph_object = {}
         graph_object['nodes'] = []
         graph_object['edges'] = []
-        for node in nodes:
+        for idx, node in enumerate(nodes):
+            # for e in node.__dict__:
+            #     print('element', e)
             node_object = {}
-            node_object['id'] = id(node)
-            node_object['label'] = id(node)
+            node_object['id'] = str(id(node))
+            node_object['label'] = str(node.sequence_number)
+            node_object['validator'] = str(id(node.sender))
+            node_object['weight'] = node.sender.weight
+            node_object['size'] = round(10 + node.sender.weight/5)
+            node_object['color'] = color_values[idx]
             node_object['shape'] = 'hexagon'
+            # group_object = {}
+            # group_object[str(node.sequence_number)] = {}
+            # group_object[str(node.sequence_number)]['mass'] = -200
+            # node_object['group'] = group_object
+            node_object['shadow'] = True
             graph_object['nodes'].append(node_object)
+
 
         nx.draw_networkx_nodes(graph, positions, alpha=0.5, node_color=color_values, nodelist=nodes,
                                node_size=node_sizes, node_shape=self.node_shape, edge_color='black')
@@ -124,6 +136,13 @@ class PlotTool(object):
                     edge_object = {}
                     edge_object['from'] = id(e[0])
                     edge_object['to'] = id(e[1])
+                    edge_object['color'] = { }
+                    if edge['edge_color'] == 'red':
+                        edge_object['width'] = 3
+                    edge_object['color']['color'] = edge['edge_color']
+
+                    if edge['style'] == 'dotted':
+                        edge_object['dashes'] = True
                     graph_object['edges'].append(edge_object)
                 nx.draw_networkx_edges(
                     graph,
@@ -191,7 +210,10 @@ class PlotTool(object):
                 edges=edges
             )
 
-            plt.show()
+            # plt.show()
+            time.sleep(self.interval_sleep)
+            self.interval_sleep += 5
+
 
     def make_thumbnails(self, frame_count_limit=IMAGE_LIMIT, xsize=1000, ysize=1000):
         """Make thumbnail images in PNG format."""

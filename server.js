@@ -24,7 +24,6 @@ const parseArgs = async (data, socket) => {
       Object.keys(data).map(async arg => {
         switch(arg) {
           case 'network':
-            console.log('data[arg]', data[arg])
             options.args.push(`${data[arg]}`)
             break
           case 'validators':
