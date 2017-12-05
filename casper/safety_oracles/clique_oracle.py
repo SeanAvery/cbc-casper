@@ -112,3 +112,72 @@ class CliqueOracle(AbstractOracle):
         # Return the number of faults we can tolerate, which is one less
         # than the number that need to equivocate.
         return fault_tolerance, len(equivocating) - 1
+
+    def check_heuristic_min_bound(self):
+        """Returns a minimum bound clique using a greedy search lookup."""
+
+        # collect edges and create graph
+        edges = self._collect_edges()
+        graph = nx.Graph()
+        graph.add_edges_from(edges)
+        nodes = graph.nodes()
+
+        # if graph is empty, break out of function
+        if not nodes:
+            print('### graph is empty, not running clique search')
+            return
+
+        # base case: find largest degree node in graph
+        max_degree_node = self.find_max_degree_node(graph, nodes)
+        if not max_degree_node:
+            raise Exception("### Did not find a node in the graph, no common estimates")
+        print("### base case max node, degree:", graph.degree(max_degree_node))
+
+        # neighbors list !! mutable via greedy_clique_search !!
+        max_degree_neighbors = list(graph.neighbors(max_degree_node))
+
+        # do a greedy search across neighbors to find clique containing base case vertex
+        return self.greedy_clique_search(graph, [], max_degree_node, max_degree_neighbors)
+
+    # !! recursive !!
+    def greedy_clique_search(self, graph, heuristic_min_clique, max_degree_node, max_degree_neighbors):
+        """Recursive function that implements greedy search of a maximum clique containing a given vertex"""
+
+        # add highest degree vertex to minimum clique
+        heuristic_min_clique.append(max_degree_node)
+
+        # fetch neighbors of the max degree vertex
+        latest_max_degree_neighbors = graph.neighbors(max_degree_node)
+
+        # if vertex does not have neighbors finish search, the graph is empty
+        if not latest_max_degree_neighbors:
+            print("### vertex has no neighbors")
+            print("### found a clique of size:", heuristic_min_clique, len(heuristic_min_clique))
+            return heuristic_min_clique
+
+        # remove neighbors that are not adjacent to the new max degree vertex
+        for node in max_degree_neighbors:
+            if node not in latest_max_degree_neighbors:
+                max_degree_neighbors.remove(node)
+
+        # find new max degree node after graph pruning
+        temp_max_degree_node = self.find_max_degree_node(graph, max_degree_neighbors)
+
+        # if all neighbors have been eliminated, exit and return maximum clique
+        if not temp_max_degree_node:
+            print("### all neighbors have been eliminated from graph")
+            print("### found a clique of size:", heuristic_min_clique, len(heuristic_min_clique))
+            return heuristic_min_clique
+
+        # recursively call the greedy search
+        return self.greedy_clique_search(graph, heuristic_min_clique, temp_max_degree_node, max_degree_neighbors)
+
+    def find_max_degree_node(self, graph, nodes):
+        """Returns greatest degree node out of list"""
+        max_degree_node = None
+        for node in nodes:
+            if not max_degree_node:
+                max_degree_node = node
+            if graph.degree(node) > graph.degree(max_degree_node):
+                max_degree_node = node
+        return max_degree_node

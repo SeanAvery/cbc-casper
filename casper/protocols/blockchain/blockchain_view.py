@@ -26,11 +26,10 @@ class BlockchainView(AbstractView):
     def update_safe_estimates(self, validator_set):
         """Checks safety on messages in views forkchoice, and updates last_finalized_block"""
         tip = self.estimate()
-
         while tip and tip != self.last_finalized_block:
             oracle = CliqueOracle(tip, self, validator_set)
+            heuristic_tolerance = oracle.check_heuristic_min_bound()
             fault_tolerance, _ = oracle.check_estimate_safety()
-
             if fault_tolerance > 0:
                 self.last_finalized_block = tip
                 self._update_when_finalized_cache(tip)
